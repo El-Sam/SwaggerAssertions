@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FR3D\SwaggerAssertions\PhpUnit;
 
 use FR3D\SwaggerAssertions\SchemaManager;
@@ -26,13 +28,15 @@ trait SymfonyAssertsTrait
         string $httpMethod,
         string $message = ''
     ) {
-        $this->assertResponseMediaTypeMatch(
-            $response->headers->get('Content-Type'),
-            $schemaManager,
-            $path,
-            $httpMethod,
-            $message
-        );
+        if (!empty((string) $response->getContent())) {
+            $this->assertResponseMediaTypeMatch(
+                $response->headers->get('Content-Type'),
+                $schemaManager,
+                $path,
+                $httpMethod,
+                $message
+            );
+        }
 
         $httpCode = $response->getStatusCode();
         $headers = $this->inlineHeaders($response->headers->all());

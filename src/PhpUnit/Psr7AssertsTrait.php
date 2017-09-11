@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FR3D\SwaggerAssertions\PhpUnit;
 
 use FR3D\SwaggerAssertions\SchemaManager;
@@ -26,13 +28,15 @@ trait Psr7AssertsTrait
         string $httpMethod,
         string $message = ''
     ) {
-        $this->assertResponseMediaTypeMatch(
-            $response->getHeaderLine('Content-Type'),
-            $schemaManager,
-            $path,
-            $httpMethod,
-            $message
-        );
+        if (!empty((string) $response->getBody())) {
+            $this->assertResponseMediaTypeMatch(
+                $response->getHeaderLine('Content-Type'),
+                $schemaManager,
+                $path,
+                $httpMethod,
+                $message
+            );
+        }
 
         $httpCode = $response->getStatusCode();
         $headers = $this->inlineHeaders($response->getHeaders());
@@ -47,7 +51,7 @@ trait Psr7AssertsTrait
         );
 
         $this->assertResponseBodyMatch(
-            json_decode($response->getBody()),
+            json_decode((string) $response->getBody()),
             $schemaManager,
             $path,
             $httpMethod,
@@ -99,7 +103,7 @@ trait Psr7AssertsTrait
         );
 
         $this->assertRequestBodyMatch(
-            json_decode($request->getBody()),
+            json_decode((string) $request->getBody()),
             $schemaManager,
             $path,
             $httpMethod,
