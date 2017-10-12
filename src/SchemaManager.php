@@ -382,9 +382,12 @@ class SchemaManager
     private function turnXnullableToNullType(&$schema)
     {
         foreach ($schema as $key => $item) {
+
             if ('properties' === $key) {
                 foreach ($item as $property => $definition) {
-                    if (isset($definition->type)) {
+
+                    if (isset($definition->type) and 'array' !== $definition->type) {
+
                         $arr = get_object_vars($definition);
 
                         if (array_key_exists('x-nullable', $arr)) {
@@ -398,6 +401,7 @@ class SchemaManager
                                 unset($definition->{'x-nullable'});
                             }
                         }
+
                     } else {
                         $this->turnXnullableToNullType($definition);
                     }
