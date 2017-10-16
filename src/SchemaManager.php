@@ -386,7 +386,7 @@ class SchemaManager
             if ('properties' === $key) {
                 foreach ($item as $property => $definition) {
 
-                    if (isset($definition->type) and 'array' !== $definition->type) {
+                    if (isset($definition->type)) {
 
                         $arr = get_object_vars($definition);
 
@@ -400,6 +400,10 @@ class SchemaManager
 
                                 unset($definition->{'x-nullable'});
                             }
+                        }
+
+                        if('array' === $definition->type){
+                            $this->turnXnullableToNullType($definition);
                         }
 
                     } else {
